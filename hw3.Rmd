@@ -1,0 +1,188 @@
+---
+title: "hw3"
+author: "YangfanCai/yangfanc"
+date: "2/13/2020"
+output: html_document
+---
+
+```{r}
+library('reshape2')
+data(tips, package="reshape2")
+```
+
+
+```{r}
+?tips
+```
+
+```{r}
+summary(tips)
+```
+
+
+1.
+```{r}
+numParty<-nrow(tips)
+numParty
+```
+
+
+
+
+
+2.
+```{r}
+str(tips)
+# it is show that--mun&int&fafactor, mum should mean the data have 2 decimal place /the factor mean should be choose between two things like true or false/int is the integer. 
+# in this dataset, the dataset has 24 object, and 7 variables, there total-bill,tip,sex,smoker,day,time,size
+```
+
+
+```{r}
+sapply(tips, typeof)
+```
+
+
+
+
+
+
+3.
+```{r}
+day <- factor(tips$day,levels = c("Thur","Fri","Sat","Sun"))
+day
+```
+
+
+
+
+
+
+4.
+```{r}
+female5 <- tips[tips$sex == 'Female' & tips$size >= 5, ]
+female5
+```
+
+
+
+
+
+
+
+
+5.
+```{r}
+library(ggplot2)
+ggplot(tips, aes(x=total_bill, y=tip)) + geom_point() + labs(title="Total Bill and Tip", x = "Total Bill ($)", y = "Tip ($)")
+ggplot(tips,aes(x = total_bill, y = tip)) + geom_point() + scale_x_log10() + scale_y_log10() + geom_smooth(method = 'lm')
+```
+
+```{r}
+# this plot is show that many customer total bill focus on 10 to 25. and then the tips is 0 to 5 if customer spent low than 25 in total bill. if the total bill at 10 to 15, the costomer will be pay low than 2.5. if the costomer spent total bill in 15 - 20, the tips is between 2.5 to 5 tips. in the all plot, we can get the conclusion is that the higher the total bill, the higher the tips. it is proportional.
+```
+
+
+
+
+
+
+6.
+```{r}
+# anomalies : 1.y-axis near 5 and x-axis is near to 6. 2. x-axies 45 y-axis 2.5
+# mean: 1. total bill less than tip 2. it is less than average value betwwen 40 to 50 in the x-axies.
+```
+
+
+
+
+
+7.
+```{r}
+head (tips)
+tips$tiprate <-  tips$tip/tips$total_bill
+mean (tips$tiprate)
+```
+
+```{r}
+# average rate for tips is 0.1608026.
+```
+
+
+
+
+
+8.
+```{r}
+tips$time = factor(tips$time, levels(tips$time)[c(2,1)])
+ggplot(tips, aes(x=time, y=tiprate)) + geom_boxplot() + labs(x="Meal Time", y="Tip Rate (tip/total_bill)", title="Time vs Tip Rate")
+
+```
+
+```{r}
+## in the plot,
+## the lunch and dinnner average tip rate between 0.2.
+## tip rate in lunch and dinner: lunch tip rate low than dinner
+## low ending around 0.05
+## high ending low than 0.3
+## dinner have 4 outliers
+```
+
+
+
+9.
+```{r}
+ggplot(tips, aes(x=tip , y=total_bill)) + geom_point(shape=1) + geom_smooth(method=lm) + facet_grid(smoker ~ sex)
+```
+
+```{r}
+# between 15 -18
+# tip and bill porpoetion
+
+# female and male:
+# non-smoker range: equal
+# non-smoker in the male not focus than femal smoker
+
+# male:
+# 1. bill--outliers on the greater extreme
+# 2. tiprate has the widest spread and the most extreme outlier
+
+# female:
+# 1. bill--outliers on both ends of the extreme
+
+```
+
+
+9.
+```{r}
+tips$ss <- interaction(tips$smoker, tips$sex)
+ggplot(tips, aes(x=ss, y = tiprate)) + geom_boxplot() + labs(x="SmokerSex", y="TipRate", title = "SmokerSexAndTipRate")
+```
+
+
+
+
+
+
+
+10.
+```{r}
+ggplot(tips, aes(fill=sex, y=1,x=day)) + geom_bar(position="fill", stat="identity") + labs(title="Sex of Patron vs Day of the Week",y="Percentage %", x="Day of the Week", fill="Sex of Patron")
+```
+
+
+```{r}
+# base on plot
+#Fri:male < female
+#Sat:male > female
+#sun:male < female
+#thur:make < female
+
+# conclusion
+# 1. pay the bill in this 4 day: male more than female
+# 2. female pay the bill more than male on Thur, about 0.51-0.53
+# 3. female and male is near in pay a bill on friday
+# 4. base on sun and sat, male is more than femal, female about 0.25-0.375
+```
+
+
